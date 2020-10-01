@@ -11,6 +11,7 @@ WORKDIR /home/flasky
 RUN git clone https://github.com/sriram161/starwarsV.git
 
 RUN pip3 install -r /home/flasky/starwarsV/requirements.txt
+ENV PATH /home/flasky/startwarsV/application:$PATH
 
 EXPOSE 5000
 

@@ -1,3 +1,4 @@
+from flask_sqlalchemy import SQLAlchemy
 import werkzeug
 werkzeug.cached_property = werkzeug.utils.cached_property
 from flask import Flask
@@ -10,8 +11,11 @@ app = Flask(__name__)
 api = Api(app, version='1.0', title='Starwars films.',
           description='get all the starwars films.')
 
+db = SQLAlchemy(app)
+
 api.add_resource(Films, '/films', endpoint='films')
 api.add_resource(Characters, '/characters', endpoint='characters')
 
 if __name__ == "__main__":
+    db.create_all()
     app.run(debug=True)

@@ -1,4 +1,4 @@
-from flask import make_response, jsonify, abort
+from flask import make_response, jsonify, abort, request
 from flask_restplus import Namespace, Resource
 from utils.getters import get_starwars_url
 import urllib.parse
@@ -23,8 +23,10 @@ class Characters(Resource):
             abort("Need filmID in input request!!!")
 
     def _get_character_urls(self,film_id):
-        films_url = urllib.parse.urljoin(self, get_starwars_url(), 'films', film_id)
-        return requests.get(films_url).json()['characters']
+        films_url = urllib.parse.urljoin(get_starwars_url(), 'films') 
+        film_url = films_url + '/' + str(film_id) + '/'
+        json_ = requests.get(film_url).json()
+        return json_['characters']
 
     def get_characters(self, film_id):
         names = []
@@ -33,6 +35,7 @@ class Characters(Resource):
             template['id'] = self.get_id(url)
             template['name'] = self.get_character_name(url)
             names.append(template)
+        return names
         
     def get_id(self, url):
         pattern = "([0-9]+)/$"

@@ -16,6 +16,7 @@ ENV PATH /home/flasky/startwarsV/application:$PATH
 EXPOSE 8080
 
 WORKDIR /home/flasky/starwarsV/application
+RUN mkdir database
 RUN git checkout master
 RUN git pull
 

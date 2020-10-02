@@ -10,6 +10,7 @@ class Server(object):
         
         def config_app(self):
             self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/test1.db'
+            self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         
         def setup_database(self):
             self.db = SQLAlchemy(self.app)
@@ -26,8 +27,8 @@ class Server(object):
         def create_all_tables(self):
             self.db.create_all()
 
-        def start(self):
-            self.app.run(debug=True)
+        def start(self, debug=False):
+            self.app.run(debug=debug)
 
         def setup_api(self):
             self.api = Api(self.app, version='1.0', title='Starwars films.', description='get all the starwars films.')

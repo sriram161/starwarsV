@@ -7,6 +7,7 @@ import re
 from datetime import datetime
 from server import Tcharacters
 from server import db
+from utils.getters import get_cache_validity
 
 class Characters(Resource):
     ''' This api have a post service to get all characters form starwars
@@ -32,7 +33,7 @@ class Characters(Resource):
         """ Flag to refresh table data or not.
         """
         for db_obj in Tcharacters.query.filter_by(filmid=film_id).get(1):
-            if (current_time - db_obj.lastupdate).total_seconds() <= 3600:
+            if (current_time - db_obj.lastupdate).total_seconds() <= get_cache_validity():
                 return False
         return True
 

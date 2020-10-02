@@ -6,6 +6,7 @@ import requests
 from datetime import datetime
 from server import Tfilms
 from server import db
+from utils.getters import get_cache_validity
 
 class Films(Resource):
     '''This api have a post service to get all films form starwars
@@ -18,7 +19,7 @@ class Films(Resource):
         """ Flag to refresh table data or not.
         """
         for db_obj in Tfilms.query.get(1):
-            if (current_time - db_obj.lastupdate).total_seconds() <= 3600:
+            if (current_time - db_obj.lastupdate).total_seconds() <= get_cache_validity():
                 return False
         return True
 

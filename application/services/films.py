@@ -18,10 +18,14 @@ class Films(Resource):
     def is_expired_data_in_cache(self, current_time):
         """ Flag to refresh table data or not.
         """
-        for db_obj in Tfilms.query.get(1):
-            if (current_time - db_obj.lastupdate).total_seconds() <= get_cache_validity():
-                return False
-        return True
+        try:
+            for db_obj in Tfilms.query.get(1):
+                if (current_time - db_obj.lastupdate).total_seconds() <= get_cache_validity():
+                    return False
+                else:
+                    return True
+        except:
+            return True
 
     def _get_starwars_film_data(self):
         films_url = urllib.parse.urljoin(get_starwars_url(), 'films')

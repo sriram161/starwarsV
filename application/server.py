@@ -7,37 +7,37 @@ from flask_restplus import Api
 class Server(object):
     """ Setup and configure flask application.
     """
-        def __init__(self):
-            self.app = Flask(__name__)
-        
-        def config_app(self):
-            self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/test1.db'
-            self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        
-        def setup_database(self):
-            self.db = SQLAlchemy(self.app)
-        
-        def get_db(self):
-            return self.db
+    def __init__(self):
+        self.app = Flask(__name__)
+    
+    def config_app(self):
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/test1.db'
+        self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    def setup_database(self):
+        self.db = SQLAlchemy(self.app)
+    
+    def get_db(self):
+        return self.db
 
-        def get_api(self):
-            return self.api
+    def get_api(self):
+        return self.api
 
-        def drop_all_tables(self):
-            self.db.drop_all()
+    def drop_all_tables(self):
+        self.db.drop_all()
 
-        def create_all_tables(self):
-            self.db.create_all()
+    def create_all_tables(self):
+        self.db.create_all()
 
-        def start(self, debug=False):
-            self.app.run(debug=debug)
+    def start(self, debug=False):
+        self.app.run(debug=debug)
 
-        def setup_api(self):
-            self.api = Api(self.app, version='1.0', title='Starwars films.', description='get all the starwars films.')
-            from services.films import Films
-            from services.characters import Characters
-            self.api.add_resource(Films, '/films', endpoint='films')
-            self.api.add_resource(Characters, '/characters', endpoint='characters')
+    def setup_api(self):
+        self.api = Api(self.app, version='1.0', title='Starwars films.', description='get all the starwars films.')
+        from services.films import Films
+        from services.characters import Characters
+        self.api.add_resource(Films, '/films', endpoint='films')
+        self.api.add_resource(Characters, '/characters', endpoint='characters')
 
 server = Server()
 server.config_app()
@@ -48,15 +48,17 @@ class Tcharacters(db.Model):
     """ ORM tables definiton for charactes table on database.
     """
     __tablename__ = 'characters'
-    id_ = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    id_ = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(80), nullable=False)
     lastupdate = db.Column(db.DateTime, nullable=False)
     filmid = db.Column(db.Integer, nullable=False)
 
-    def __init__(id_, name, lastupdate):
+    def __init__(self, id_, name, lastupdate, filmid):
         self.id_ = id_
         self.name = name
         self.lastupdate = lastupdate
+        self.filmid = filmid
 
 
 class Tfilms(db.Model):

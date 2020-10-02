@@ -32,10 +32,16 @@ class Characters(Resource):
     def is_expired_data_in_cache(self, film_id, current_time):
         """ Flag to refresh table data or not.
         """
-        for db_obj in Tcharacters.query.filter_by(filmid=film_id).get(1):
-            if (current_time - db_obj.lastupdate).total_seconds() <= get_cache_validity():
-                return False
-        return True
+        try:
+            for db_obj in Tcharacters.query.filter_by(filmid=film_id):
+                if (current_time - db_obj.lastupdate).total_seconds() <= get_cache_validity():
+                    return False
+                else:
+                    return False
+            else:
+                return True
+        except:
+            return True
 
     def _get_character_urls(self, film_id):
         """ Gives characters urls for a film.
@@ -63,24 +69,24 @@ class Characters(Resource):
             names.append(template)
         return names
 
-    def truncate_cache(self):
-        Tcharacters.query.delete()
+    def truncate_cache(self, film_id):
+        Tcharacters.query.filter_by(filmid=film_id).delete()
+        db.session.commit()
 
-    def insert_file_info_to_cache(self, output, current_time, film_id):
+    def insert_character_info_to_cache(self, output, current_time, film_id):
         for element in output:
             db.session.add(Tcharacters(id_=element['id'], name=element['name'],
                                   lastupdate=current_time, filmid=film_id))
         db.session.commit()
 
-    def _get_character_info_from_cache(self):
-        film_info = []
-        for row_obj in Tfilms.query.all():
-            template = {'id': None, 'title': None, 'release_date': None}
+    def _get_character_info_from_cache(self, film_id):
+        info = []
+        for row_obj in Tcharacters.query.filter_by(filmid=film_id):
+            template = {'id': None, 'name': None}
             template['id'] = row_obj.id_
-            template['title'] = row_obj.title
-            template['release-date'] = row_obj.releasedate
-            film_info.append(template)
-        return film_info
+            template['name'] = row_obj.name
+            info.append(template)
+        return info
 
     def post(self):
         '''Processing post request start here'''
@@ -89,7 +95,7 @@ class Characters(Resource):
         film_id = self.get_input_params(input_json)
         if self.is_expired_data_in_cache(film_id, current_time):
            output = self.get_characters(film_id)
-           self.truncate_cache()
+           self.truncate_cache(film_id)
            self.insert_character_info_to_cache(output, current_time, film_id)
         else:
             output = self._get_character_info_from_cache(film_id)

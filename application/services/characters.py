@@ -4,6 +4,7 @@ from utils.getters import get_starwars_url
 import urllib.parse
 import requests
 import re
+from datetime import datetime
 
 class Characters(Resource):
     '''This api have a post service to get all films form starwars''' 
@@ -11,6 +12,7 @@ class Characters(Resource):
     def post(self):
         '''Create a new task'''
         input_json = request.get_json()
+        current_time = datetime.now()
         film_id = self.get_input_params(input_json)
         output = self.get_characters(film_id)
         return make_response(jsonify(output))

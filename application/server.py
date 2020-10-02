@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restplus import Api
 
 class Server(object):
+    """ Setup and configure flask application.
+    """
         def __init__(self):
             self.app = Flask(__name__)
         
@@ -43,6 +45,8 @@ server.setup_database()
 db = server.get_db()
 
 class Tcharacters(db.Model):
+    """ ORM tables definiton for charactes table on database.
+    """
     __tablename__ = 'characters'
     id_ = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
@@ -56,6 +60,8 @@ class Tcharacters(db.Model):
 
 
 class Tfilms(db.Model):
+    """ ORM tables definiton for films table on datbase.
+    """
     __tablename__ = 'films'
     id_ = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)

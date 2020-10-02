@@ -15,6 +15,8 @@ class Films(Resource):
     '''
     
     def is_expired_data_in_cache(self, current_time):
+        """ Flag to refresh table data or not.
+        """
         for db_obj in Tfilms.query.get(1):
             if (current_time - db_obj.lastupdate).total_seconds() <= 3600:
                 return False

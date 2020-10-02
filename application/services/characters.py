@@ -9,7 +9,17 @@ from server import Tcharacters
 from server import db
 
 class Characters(Resource):
-    '''This api have a post service to get all films form starwars''' 
+    ''' This api have a post service to get all characters form starwars
+        Example:
+        ========
+        Native curl on windows:
+        =======================
+        curl -X POST -H "Content-Type:application/json" --data "{"""filmID""":"""1"""}" http://localhost:5000/characters
+
+        On linux:
+        =========
+        curl -X POST -H "Content-Type:application/json" --data '{"filmID":"1"}' http://localhost:5000/characters
+    ''' 
     
     def get_input_params(self, json_):
         try:
@@ -19,12 +29,16 @@ class Characters(Resource):
             abort("Need filmID in input request!!!")
    
     def is_expired_data_in_cache(self, film_id, current_time):
+        """ Flag to refresh table data or not.
+        """
         for db_obj in Tcharacters.query.filter_by(filmid=film_id).get(1):
             if (current_time - db_obj.lastupdate).total_seconds() <= 3600:
                 return False
         return True
 
     def _get_character_urls(self, film_id):
+        """ Gives characters urls for a film.
+        """
         films_url = urllib.parse.urljoin(get_starwars_url(), 'films') 
         film_url = films_url + '/' + str(film_id) + '/'
         json_ = requests.get(film_url).json()
@@ -38,6 +52,8 @@ class Characters(Resource):
         return requests.get(url).json()['name']
 
     def get_characters(self, film_id):
+        """ Gives characters details. 
+        """
         names = []
         for url in self._get_character_urls(film_id):
             template = {'id': None, 'name': None}
@@ -66,7 +82,7 @@ class Characters(Resource):
         return film_info
 
     def post(self):
-        '''Create a new task'''
+        '''Processing post request start here'''
         input_json = request.get_json()
         current_time = datetime.now()
         film_id = self.get_input_params(input_json)

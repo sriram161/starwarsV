@@ -10,13 +10,14 @@ WORKDIR /home/flasky
 
 RUN git clone https://github.com/sriram161/starwarsV.git
 
-RUN pip3 install -r /home/flasky/starwarsV/requirements.txt
+RUN pip3 install -r ./starwarsV/requirements.txt
 ENV PATH /home/flasky/startwarsV/application:$PATH
 
 EXPOSE 8080
 
 WORKDIR /home/flasky/starwarsV/application
 RUN mkdir database
+
 RUN git checkout master
 RUN git pull
 

@@ -29,8 +29,8 @@ class Server(object):
     def create_all_tables(self):
         self.db.create_all()
 
-    def start(self, debug_=False, port_=8080):
-        self.app.run(debug=debug_, port=port_)
+    def start(self, debug_=False, host_ ='0.0.0.0', port_=8080):
+        self.app.run(debug=debug_, host=host_, port=port_)
 
     def setup_api(self):
         self.api = Api(self.app, version='1.0', title='Starwars films.', description='get all the starwars films.')
